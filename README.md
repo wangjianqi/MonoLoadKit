@@ -1,8 +1,8 @@
 # MonoLoadKit
 
-**32 minimal, animated SwiftUI loading indicators. One zero-dependency Swift Package.**
+![MonoLoadKit brand logo](Brand/MonoLoadLockup.png)
 
-![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white) ![iOS](https://img.shields.io/badge/iOS-16%2B-000000?logo=apple) ![macOS](https://img.shields.io/badge/macOS-13%2B-000000?logo=apple) ![tvOS](https://img.shields.io/badge/tvOS-16%2B-000000?logo=apple) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-F05138?logo=swift&logoColor=white)
+**44 minimal, animated SwiftUI loading indicators. One zero-dependency Swift Package.**
 
 [简体中文](README.zh-CN.md) · [License](LICENSE) · [Demo](Examples/MonoLoadDemo)
 
@@ -12,13 +12,13 @@ Designed for monochrome interfaces, camera apps, productivity tools, and any app
 
 ## Features
 
-- **32 individual animations**, with English/Chinese style names and stable IDs.
+- **44 individual animations (32 original + 12 crafted additions)**, with English/Chinese style names and stable IDs.
 - **Pure SwiftUI** with scalable vector drawing.
 - **Configurable** size, tint, animation speed, and playback.
 - **Pause/resume** preserving progress phase in `MonoLoadingView`.
 - **Reduce Motion** support: presents a stationary indicator instead of constantly animating.
 - **Batch-friendly** `MonoLoadingGlyph` that can share a single `TimelineView` across many cells.
-- **Demo iOS application** with 32 live previews, category filters, search, light/dark themes, size/speed controls, and copyable Swift code.
+- **Demo iOS application** with 44 live previews and a New 12 collection, category filters, search, light/dark themes, size/speed controls, and copyable Swift code.
 - **MIT license**, no GitHub Actions required.
 
 ## Requirements
@@ -40,7 +40,8 @@ In Xcode: **File → Add Package Dependencies… → Add Local…** for a cloned
 Swift package manifest:
 
 ```swift
-.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.0.0")
+// After publishing the repository, replace the URL with your actual GitHub URL.
+.package(url: "https://github.com/<OWNER>/MonoLoadKit.git", from: "1.1.0")
 ```
 
 Then add the `MonoLoadKit` product to your app target.
@@ -84,7 +85,7 @@ if isProcessing {
 
 ### Batch rendering with a shared timeline
 
-When displaying all 32 animations in a grid, **do not create a separate timer for each cell**. Use one SwiftUI timeline with the stateless glyph API:
+When displaying all 44 animations in a grid, **do not create a separate timer for each cell**. Use one SwiftUI timeline with the stateless glyph API:
 
 ```swift
 TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { frame in
@@ -103,7 +104,7 @@ TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { frame in
 
 See `DemoGalleryView.swift` for shared-timeline pause/resume and speed controls.
 
-## 32 styles
+## 44 styles
 
 | # | Swift case | Display name | 中文 |
 |---|---|---|---|
@@ -139,6 +140,40 @@ See `DemoGalleryView.swift` for shared-timeline pause/resume and speed controls.
 | 30 | `opposingArcs` | Opposing Arcs | 对向弧环 |
 | 31 | `threeBladeFan` | Three-Blade Fan | 三叶风车 |
 | 32 | `tiltedOrbit` | Tilted Orbit | 倾斜轨道 |
+| **33** | `liquidYinYang` | Liquid Yin Yang | 太极流转增强版 |
+| **34** | `silkThreeBlade` | Silk Three-Blade | 三叶风车增强版 |
+| **35** | `twinStarOrbit` | Twin Star Orbit | 双星轨道 |
+| **36** | `petalBloom` | Petal Bloom | 花瓣脉冲 |
+| **37** | `crossingEllipses` | Crossing Ellipses | 椭圆双环 |
+| **38** | `rippleCore` | Ripple Core | 涟漪同心 |
+| **39** | `planetChase` | Planet Chase | 行星追逐 |
+| **40** | `duoCrescents` | Duo Crescents | 双月对旋 |
+| **41** | `microWave` | Micro Wave | 微光脉线 |
+| **42** | `orbitalWreath` | Orbital Wreath | 轨道花环 |
+| **43** | `spiralTurbine` | Spiral Turbine | 旋翼矩阵 |
+| **44** | `magneticRing` | Magnetic Ring | 极简磁环 |
+
+## Crafted collection (33–44)
+
+The original `MonoLoadingStyle` cases #01–#32 are unchanged and remain source compatible. New styles are added after them. The improved Yin Yang (#33) uses a true S-curve surface with balanced dots; Silk Three-Blade (#34) uses curved leaf geometry and tonal shading, not capsules. Other designs use native gradient fills, ellipses, periodic waves, and orbiting particle paths.
+
+```swift
+// New Yin Yang and turbine styles
+MonoLoadingView(style: .liquidYinYang, size: 44, color: .primary)
+MonoLoadingView(style: .silkThreeBlade, size: 44, color: .white)
+```
+
+## Brand assets
+
+The logo was refined around one shared circular SVG geometry (see [brand guidelines](Brand/BRAND-GUIDELINES.md)). The Demo app icon and light/dark header marks use this same geometry.
+
+
+- [`Brand/MonoLoadMark.svg`](Brand/MonoLoadMark.svg) — editable square brand source.
+- [`Brand/MonoLoadMark-Transparent.svg`](Brand/MonoLoadMark-Transparent.svg) — transparent standalone mark.
+- [`Brand/MonoLoadLockup.svg`](Brand/MonoLoadLockup.svg) — horizontal brand lockup.
+- `Examples/MonoLoadDemo/MonoLoadDemo/Assets.xcassets` — configured `AppIcon` and `BrandMark` referenced by the Demo gallery. No manual icon configuration is needed.
+
+The branding assets are project-owned graphics released under the same MIT license.
 
 ## Run the Demo
 
@@ -148,7 +183,7 @@ See `DemoGalleryView.swift` for shared-timeline pause/resume and speed controls.
 4. Run on an iOS 16+ simulator or a real device. The Xcode project already references `../..` as a **local Swift Package**.
 5. Tap a card to see a larger preview and copy the implementation snippet.
 
-The Demo requires no accounts, Firebase, or network access. If signing is required on a real device, select your development team; simulator runs should not require signing.
+Use the **New 12** gallery filter to inspect the newly added animations. The Demo requires no accounts, Firebase, or network access. If signing is required on a real device, select your development team; simulator runs should not require signing.
 
 ## Architecture
 
@@ -157,13 +192,15 @@ Package.swift
 Sources/MonoLoadKit/
   MonoLoadingStyle.swift     — public style enum, metadata, categories
   MonoLoadingView.swift      — SwiftUI component and stateless batch glyph
-  MonoLoadingPainter.swift   — private Canvas renderer for all 32 styles
+  MonoLoadingPainter.swift   — private Canvas renderer for all 44 styles
 Tests/MonoLoadKitTests/      — style registry / metadata tests
+Brand/                      — SVG master logo, transparent mark, App Icon PNG
+Examples/MonoLoadDemo/MonoLoadDemo/Assets.xcassets/ — app icon and in-app brand mark
 Examples/MonoLoadDemo/      — separate iOS app, local SPM dependency
 Scripts/verify.sh           — source syntax and project structure checks
 ```
 
-Animations use mathematical continuous time rather than 32 independent timers. The single indicator owns its animation clock and pauses when removed from the view tree. The gallery shares one clock for all visible cells. Rendering frame rate is requested at approximately 30 FPS; **actual FPS is controlled by the system and has not been benchmarked**.
+Animations use mathematical continuous time rather than 44 independent timers. The single indicator owns its animation clock and pauses when removed from the view tree. The gallery shares one clock for all visible cells. Rendering frame rate is requested at approximately 30 FPS; **actual FPS is controlled by the system and has not been benchmarked**.
 
 ## Accessibility
 
@@ -188,4 +225,4 @@ The shell script also runs syntax and package checks on Linux but **cannot compi
 
 ## Contributing and license
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under [MIT](LICENSE).
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [QA-CHECKLIST.md](QA-CHECKLIST.md). Licensed under [MIT](LICENSE).

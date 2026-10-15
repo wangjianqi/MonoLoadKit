@@ -1,6 +1,6 @@
 import Foundation
 
-/// Thirty-two monochrome loading styles. Cases are stable: their order matches the showcase.
+/// Forty-four monochrome loading styles. Original 32 cases remain in their original order.
 public enum MonoLoadingStyle: String, CaseIterable, Identifiable, Hashable, Sendable {
     case lightArc
     case flowingCrescent
@@ -34,10 +34,23 @@ public enum MonoLoadingStyle: String, CaseIterable, Identifiable, Hashable, Send
     case opposingArcs
     case threeBladeFan
     case tiltedOrbit
+    // Additional crafted styles (#33–#44). Keep the original 32 stable.
+    case liquidYinYang
+    case silkThreeBlade
+    case twinStarOrbit
+    case petalBloom
+    case crossingEllipses
+    case rippleCore
+    case planetChase
+    case duoCrescents
+    case microWave
+    case orbitalWreath
+    case spiralTurbine
+    case magneticRing
 
     public var id: String { rawValue }
 
-    /// Stable numeric index (1...32), for presenting a numbered style gallery.
+    /// Stable numeric index (1...44), for presenting a numbered style gallery.
     public var number: Int {
         Self.allCases.firstIndex(of: self)!.advanced(by: 1)
     }
@@ -76,6 +89,18 @@ public enum MonoLoadingStyle: String, CaseIterable, Identifiable, Hashable, Send
         case .opposingArcs: "Opposing Arcs"
         case .threeBladeFan: "Three-Blade Fan"
         case .tiltedOrbit: "Tilted Orbit"
+        case .liquidYinYang: "Liquid Yin Yang"
+        case .silkThreeBlade: "Silk Three-Blade"
+        case .twinStarOrbit: "Twin Star Orbit"
+        case .petalBloom: "Petal Bloom"
+        case .crossingEllipses: "Crossing Ellipses"
+        case .rippleCore: "Ripple Core"
+        case .planetChase: "Planet Chase"
+        case .duoCrescents: "Duo Crescents"
+        case .microWave: "Micro Wave"
+        case .orbitalWreath: "Orbital Wreath"
+        case .spiralTurbine: "Spiral Turbine"
+        case .magneticRing: "Magnetic Ring"
         }
     }
 
@@ -113,6 +138,18 @@ public enum MonoLoadingStyle: String, CaseIterable, Identifiable, Hashable, Send
         case .opposingArcs: "对向弧环"
         case .threeBladeFan: "三叶风车"
         case .tiltedOrbit: "倾斜轨道"
+        case .liquidYinYang: "太极流转增强版"
+        case .silkThreeBlade: "三叶风车增强版"
+        case .twinStarOrbit: "双星轨道"
+        case .petalBloom: "花瓣脉冲"
+        case .crossingEllipses: "椭圆双环"
+        case .rippleCore: "涟漪同心"
+        case .planetChase: "行星追逐"
+        case .duoCrescents: "双月对旋"
+        case .microWave: "微光脉线"
+        case .orbitalWreath: "轨道花环"
+        case .spiralTurbine: "旋翼矩阵"
+        case .magneticRing: "极简磁环"
         }
     }
 
@@ -121,15 +158,18 @@ public enum MonoLoadingStyle: String, CaseIterable, Identifiable, Hashable, Send
         case .lightArc, .flowingCrescent, .segmentedRing, .intersectingRings,
              .balancedArcs, .breathingRing, .twinLenses, .wideCrescent,
              .counterRotatingArcs, .minimalArc, .concentricTracks,
-             .tripleOrbit, .yinYang, .opposingArcs, .tiltedOrbit:
+             .tripleOrbit, .yinYang, .opposingArcs, .tiltedOrbit,
+             .liquidYinYang, .twinStarOrbit, .crossingEllipses, .rippleCore,
+             .planetChase, .duoCrescents, .orbitalWreath, .magneticRing:
             .rings
         case .orbitingParticles, .orbitingDot, .eightDotChase, .twelveDotFade,
              .bouncingDots, .scanningDots, .pearlPulse, .nineDotGrid,
              .tenDotScan, .softPulse:
             .dots
-        case .soundWave, .sequentialBars, .capsulePetals, .radialTicks:
+        case .soundWave, .sequentialBars, .capsulePetals, .radialTicks, .microWave:
             .bars
-        case .roundedDiamond, .fivePetalFlower, .threeBladeFan:
+        case .roundedDiamond, .fivePetalFlower, .threeBladeFan,
+             .silkThreeBlade, .petalBloom, .spiralTurbine:
             .shapes
         }
     }
@@ -138,12 +178,15 @@ public enum MonoLoadingStyle: String, CaseIterable, Identifiable, Hashable, Send
     public var duration: TimeInterval {
         switch self {
         case .soundWave, .sequentialBars, .bouncingDots, .scanningDots,
-             .pearlPulse, .nineDotGrid, .softPulse, .fivePetalFlower:
+             .pearlPulse, .nineDotGrid, .softPulse, .fivePetalFlower,
+             .petalBloom, .microWave, .rippleCore:
             1.35
         case .intersectingRings, .twinLenses, .counterRotatingArcs,
-             .tripleOrbit, .tiltedOrbit:
+             .tripleOrbit, .tiltedOrbit, .twinStarOrbit,
+             .crossingEllipses, .planetChase, .orbitalWreath:
             2.4
-        case .roundedDiamond, .threeBladeFan:
+        case .roundedDiamond, .threeBladeFan, .silkThreeBlade,
+             .liquidYinYang, .spiralTurbine, .duoCrescents, .magneticRing:
             2.0
         default:
             1.15

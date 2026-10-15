@@ -5,6 +5,7 @@ import UIKit
 struct DemoGalleryView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var selectedCategory: MonoLoadingCategory?
+    @State private var newCollectionOnly = false
     @State private var selectedStyle: MonoLoadingStyle?
     @State private var query = ""
     @State private var isDark = true
@@ -30,10 +31,11 @@ struct DemoGalleryView: View {
     private var filteredStyles: [MonoLoadingStyle] {
         MonoLoadingStyle.allCases.filter { style in
             let inCategory = selectedCategory == nil || style.category == selectedCategory
+            let inCollection = !newCollectionOnly || style.number > 32
             let inQuery = query.isEmpty || style.label.localizedCaseInsensitiveContains(query)
                 || style.chineseLabel.localizedCaseInsensitiveContains(query)
                 || String(style.number) == query
-            return inCategory && inQuery
+            return inCategory && inCollection && inQuery
         }
     }
 
@@ -84,12 +86,17 @@ struct DemoGalleryView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 12) {
+                Image("BrandMark")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 48, height: 48)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 7) {
                     Text("MONOLOADKIT")
                         .font(.system(size: 10, weight: .bold, design: .monospaced))
                         .tracking(3)
                         .foregroundStyle(secondary)
-                    Text("32 minimalist loaders")
+                    Text("44 minimalist loaders")
                         .font(.system(size: 30, weight: .semibold, design: .rounded))
                         .tracking(-1.1)
                         .foregroundStyle(foreground)
@@ -109,7 +116,7 @@ struct DemoGalleryView: View {
                 }
                 .accessibilityLabel("Toggle color scheme")
             }
-            Text("No glow. No borders. Continuous motion.")
+            Text("Original 32 + 12 crafted styles. Pure SwiftUI motion.")
                 .font(.system(size: 13))
                 .foregroundStyle(secondary)
         }
@@ -180,7 +187,20 @@ struct DemoGalleryView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    categoryButton("All 32", category: nil)
+                    Button {
+                        newCollectionOnly = false
+                        selectedCategory = nil
+                    } label: {
+                        collectionChip("All 44", active: !newCollectionOnly && selectedCategory == nil)
+                    }
+                    .buttonStyle(.plain)
+                    Button {
+                        newCollectionOnly = true
+                        selectedCategory = nil
+                    } label: {
+                        collectionChip("New 12", active: newCollectionOnly)
+                    }
+                    .buttonStyle(.plain)
                     ForEach(MonoLoadingCategory.allCases) { category in
                         categoryButton(category.label, category: category)
                     }
@@ -190,18 +210,23 @@ struct DemoGalleryView: View {
     }
 
     private func categoryButton(_ title: String, category: MonoLoadingCategory?) -> some View {
-        let active = selectedCategory == category
+        let active = selectedCategory == category && !newCollectionOnly
         return Button {
+            newCollectionOnly = false
             selectedCategory = category
         } label: {
-            Text(title)
-                .font(.system(size: 12, weight: active ? .semibold : .medium))
-                .foregroundStyle(active ? canvas : foreground.opacity(0.72))
-                .padding(.horizontal, 14)
-                .padding(.vertical, 9)
-                .background(active ? foreground : tile, in: Capsule())
+            collectionChip(title, active: active)
         }
         .buttonStyle(.plain)
+    }
+
+    private func collectionChip(_ title: String, active: Bool) -> some View {
+        Text(title)
+            .font(.system(size: 12, weight: active ? .semibold : .medium))
+            .foregroundStyle(active ? canvas : foreground.opacity(0.72))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
+            .background(active ? foreground : tile, in: Capsule())
     }
 
     private func gallery(elapsed: TimeInterval) -> some View {
@@ -216,6 +241,12 @@ struct DemoGalleryView: View {
                                 .font(.system(size: 10, weight: .medium, design: .monospaced))
                                 .foregroundStyle(secondary)
                             Spacer()
+                            if style.number > 32 {
+                                Text("NEW")
+                                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                                    .tracking(0.7)
+                                    .foregroundStyle(secondary)
+                            }
                         }
                         .padding(.horizontal, 15)
                         .padding(.top, 14)

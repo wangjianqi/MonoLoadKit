@@ -161,6 +161,18 @@ internal struct MonoLoadingPainter {
         case .opposingArcs: drawOpposingArcs()
         case .threeBladeFan: drawThreeBladeFan()
         case .tiltedOrbit: drawTiltedOrbit()
+        case .liquidYinYang: drawLiquidYinYang()
+        case .silkThreeBlade: drawSilkThreeBlade()
+        case .twinStarOrbit: drawTwinStarOrbit()
+        case .petalBloom: drawPetalBloom()
+        case .crossingEllipses: drawCrossingEllipses()
+        case .rippleCore: drawRippleCore()
+        case .planetChase: drawPlanetChase()
+        case .duoCrescents: drawDuoCrescents()
+        case .microWave: drawMicroWave()
+        case .orbitalWreath: drawOrbitalWreath()
+        case .spiralTurbine: drawSpiralTurbine()
+        case .magneticRing: drawMagneticRing()
         }
     }
 
@@ -426,5 +438,244 @@ internal struct MonoLoadingPainter {
         layer.fill(Path(ellipseIn: CGRect(x: p.x - 5, y: p.y - 5,
                                           width: 10, height: 10)),
                    with: .color(tint))
+    }
+
+
+    // MARK: - Crafted collection (#33–#44)
+    // Geometry stays in the normalized 100 × 100 Canvas. Gradients are native
+    // GraphicsContext shadings: the package never loads images or timer assets.
+
+    private func ellipticalTrack(
+        in g: GraphicsContext, width: CGFloat = 2,
+        opacity: Double = 0.3, radius: CGFloat = 35,
+        yScale: CGFloat = 0.56
+    ) {
+        var layer = g
+        layer.scaleBy(x: 1, y: yScale)
+        let frame = CGRect(x: -radius, y: -radius, width: radius * 2, height: radius * 2)
+        layer.stroke(Path(ellipseIn: frame),
+                     with: .color(tint.opacity(opacity)),
+                     style: StrokeStyle(lineWidth: width, lineCap: .round))
+    }
+
+    private func shadedDisc(
+        in context: GraphicsContext,
+        x: CGFloat, y: CGFloat, radius: CGFloat,
+        top: Double, bottom: Double
+    ) {
+        let frame = CGRect(x: x - radius, y: y - radius, width: radius * 2, height: radius * 2)
+        context.fill(Path(ellipseIn: frame), with: .linearGradient(
+            Gradient(colors: [tint.opacity(top), tint.opacity(bottom)]),
+            startPoint: CGPoint(x: x - radius * 0.55, y: y - radius),
+            endPoint: CGPoint(x: x + radius * 0.55, y: y + radius)
+        ))
+    }
+
+    private func drawLiquidYinYang() {
+        var layer = graphics
+        layer.rotate(by: .radians(progress))
+        let r: CGFloat = 34
+        // Outer disc and balanced S-shaped surface, not a pair of plain arcs.
+        layer.fill(Path(ellipseIn: CGRect(x: -r, y: -r, width: 2 * r, height: 2 * r)),
+                   with: .color(tint.opacity(0.17)))
+        var yin = Path()
+        yin.move(to: CGPoint(x: 0, y: -r))
+        yin.addCurve(to: CGPoint(x: 0, y: r),
+                     control1: CGPoint(x: -r * 1.1046, y: -r),
+                     control2: CGPoint(x: -r * 1.1046, y: r))
+        yin.addCurve(to: .zero,
+                     control1: CGPoint(x: r * 0.55, y: r),
+                     control2: CGPoint(x: r * 0.55, y: 0))
+        yin.addCurve(to: CGPoint(x: 0, y: -r),
+                     control1: CGPoint(x: -r * 0.55, y: 0),
+                     control2: CGPoint(x: -r * 0.55, y: -r))
+        yin.closeSubpath()
+        layer.fill(yin, with: .linearGradient(
+            Gradient(colors: [tint.opacity(0.70), tint.opacity(1)]),
+            startPoint: CGPoint(x: -r, y: -r),
+            endPoint: CGPoint(x: r, y: r)
+        ))
+        shadedDisc(in: layer, x: 0, y: -r / 2, radius: 5.2, top: 0.15, bottom: 0.22)
+        shadedDisc(in: layer, x: 0, y: r / 2, radius: 5.2, top: 1, bottom: 0.75)
+        layer.stroke(Path(ellipseIn: CGRect(x: -r, y: -r, width: 2 * r, height: 2 * r)),
+                     with: .color(tint.opacity(0.43)), lineWidth: 1.1)
+    }
+
+    private func drawSilkThreeBlade() {
+        var layer = graphics
+        layer.rotate(by: .radians(progress))
+        for i in 0..<3 {
+            var blade = layer
+            blade.rotate(by: .radians(Double(i) * tau / 3))
+            var p = Path()
+            p.move(to: CGPoint(x: -2, y: -3))
+            p.addCurve(to: CGPoint(x: -4, y: -39),
+                       control1: CGPoint(x: -16, y: -17),
+                       control2: CGPoint(x: -15, y: -33))
+            p.addCurve(to: CGPoint(x: 14, y: -12),
+                       control1: CGPoint(x: 12, y: -40),
+                       control2: CGPoint(x: 17, y: -26))
+            p.addQuadCurve(to: CGPoint(x: -2, y: -3),
+                           control: CGPoint(x: 10, y: 0))
+            p.closeSubpath()
+            blade.fill(p, with: .linearGradient(
+                Gradient(colors: [tint.opacity(0.14), tint.opacity(0.92)]),
+                startPoint: CGPoint(x: -13, y: -3),
+                endPoint: CGPoint(x: 10, y: -33)
+            ))
+        }
+        shadedDisc(in: layer, x: 0, y: 0, radius: 4.3, top: 1, bottom: 0.6)
+    }
+
+    private func drawTwinStarOrbit() {
+        var track = graphics
+        track.rotate(by: .radians(.pi / 3.8))
+        ellipticalTrack(in: track, width: 2.2, opacity: 0.34)
+        var second = graphics
+        second.rotate(by: .radians(-.pi / 4))
+        ellipticalTrack(in: second, width: 1.2, opacity: 0.15, radius: 38)
+        for i in 0..<2 {
+            let angle = progress * (i == 0 ? 1 : -1) + Double(i) * .pi
+            let x = CGFloat(sin(angle)) * 35
+            let y = CGFloat(-cos(angle)) * 35 * 0.56
+            let rotation = i == 0 ? Double.pi / 3.8 : -Double.pi / 4
+            let px = x * CGFloat(cos(rotation)) - y * CGFloat(sin(rotation))
+            let py = x * CGFloat(sin(rotation)) + y * CGFloat(cos(rotation))
+            shadedDisc(in: graphics, x: px, y: py, radius: i == 0 ? 7.8 : 6.0,
+                       top: 1, bottom: 0.38)
+        }
+    }
+
+    private func drawPetalBloom() {
+        for i in 0..<8 {
+            let a = Double(i) * tau / 8 + progress * 0.28
+            let energy = 0.5 + 0.5 * sin(progress - Double(i) * tau / 8)
+            var l = graphics
+            l.rotate(by: .radians(a))
+            let petal = Path(ellipseIn: CGRect(x: -9.5, y: -36, width: 19, height: 34))
+            l.fill(petal, with: .linearGradient(
+                Gradient(colors: [tint.opacity(0.06 + 0.10 * energy), tint.opacity(0.36 + 0.56 * energy)]),
+                startPoint: CGPoint(x: -9, y: -2),
+                endPoint: CGPoint(x: 10, y: -34)
+            ))
+        }
+        dot(5, at: .zero, opacity: 0.8)
+    }
+
+    private func drawCrossingEllipses() {
+        for i in 0..<3 {
+            var layer = graphics
+            layer.rotate(by: .radians(Double(i) * .pi / 3 + progress * (i == 1 ? -0.14 : 0.18)))
+            ellipticalTrack(in: layer, width: i == 1 ? 4 : 2,
+                            opacity: i == 1 ? 0.72 : 0.35, radius: 34, yScale: 0.47)
+            let x = CGFloat(sin(progress + Double(i) * tau / 3)) * 34
+            let y = CGFloat(-cos(progress + Double(i) * tau / 3)) * 34 * 0.47
+            let angle = Double(i) * .pi / 3 + progress * (i == 1 ? -0.14 : 0.18)
+            let px = x * CGFloat(cos(angle)) - y * CGFloat(sin(angle))
+            let py = x * CGFloat(sin(angle)) + y * CGFloat(cos(angle))
+            dot(2.4, at: CGPoint(x: px, y: py), opacity: 0.9)
+        }
+    }
+
+    private func drawRippleCore() {
+        // Phase wrapping is exact, avoiding visible discontinuity between loops.
+        for i in 0..<4 {
+            let phase = (progress / tau + Double(i) / 4).truncatingRemainder(dividingBy: 1)
+            let radius = CGFloat(7 + phase * 34)
+            arc(radius: radius, width: CGFloat(2.6 - phase * 1.8),
+                opacity: (1 - phase) * 0.58)
+        }
+        shadedDisc(in: graphics, x: 0, y: 0, radius: 5.8, top: 1, bottom: 0.55)
+    }
+
+    private func drawPlanetChase() {
+        for i in 0..<3 {
+            var track = graphics
+            track.rotate(by: .radians(Double(i) * .pi / 4.5))
+            ellipticalTrack(in: track, width: 1.6, opacity: 0.14 + Double(i) * 0.06,
+                            radius: CGFloat(23 + i * 8), yScale: 0.57)
+        }
+        for i in 0..<4 {
+            let angle = progress * (i.isMultiple(of: 2) ? 1.0 : -0.78) + Double(i) * tau / 4
+            let radius = CGFloat(21 + (i % 3) * 8)
+            shadedDisc(in: graphics,
+                       x: CGFloat(sin(angle)) * radius,
+                       y: CGFloat(-cos(angle)) * radius * 0.6,
+                       radius: CGFloat(i == 0 ? 9.5 : 3.2 + Double(i) * 0.8),
+                       top: i == 0 ? 0.85 : 0.75, bottom: 0.23)
+        }
+    }
+
+    private func drawDuoCrescents() {
+        arc(radius: 33, width: 2.4, opacity: 0.12)
+        streak(radius: 33, head: progress, length: 1.50, width: 11,
+               count: 30, maxOpacity: 1)
+        streak(radius: 33, head: progress + .pi, length: 1.5, width: 11,
+               count: 30, maxOpacity: 0.87)
+    }
+
+    private func drawMicroWave() {
+        for i in 0..<11 {
+            let offset = abs(i - 5)
+            let amplitude = pow(max(0, 1.0 - Double(offset) / 6), 1.6)
+            let pulse = 0.5 + 0.5 * sin(progress * 1.5 - Double(i) * 0.48)
+            let h = CGFloat(6 + 63 * amplitude * (0.32 + pulse * 0.68))
+            bar(x: CGFloat(i - 5) * 7.5,
+                width: 4.1, height: h,
+                opacity: 0.12 + (1.0 - Double(offset) / 8) * (0.3 + pulse * 0.55))
+        }
+    }
+
+    private func drawOrbitalWreath() {
+        for i in 0..<3 {
+            var track = graphics
+            track.rotate(by: .radians(Double(i) * tau / 6 + progress * 0.12))
+            ellipticalTrack(in: track, width: 1.8,
+                            opacity: 0.14 + Double(i) * 0.06, radius: 34, yScale: 0.62)
+        }
+        for i in 0..<6 {
+            let a = progress + Double(i) * tau / 6
+            let radius: CGFloat = i.isMultiple(of: 2) ? 34 : 27
+            shadedDisc(in: graphics,
+                       x: CGFloat(sin(a)) * radius,
+                       y: CGFloat(-cos(a)) * radius * 0.85,
+                       radius: i.isMultiple(of: 2) ? 5.6 : 3.6,
+                       top: 0.94, bottom: 0.25)
+        }
+    }
+
+    private func drawSpiralTurbine() {
+        for i in 0..<12 {
+            let a = Double(i) * tau / 12 + progress * 0.68
+            var layer = graphics
+            layer.rotate(by: .radians(a))
+            var blade = Path()
+            blade.move(to: CGPoint(x: -5, y: -12))
+            blade.addCurve(to: CGPoint(x: 9, y: -39),
+                           control1: CGPoint(x: -10, y: -21), control2: CGPoint(x: -4, y: -38))
+            blade.addQuadCurve(to: CGPoint(x: 10, y: -28),
+                               control: CGPoint(x: 16, y: -34))
+            blade.addQuadCurve(to: CGPoint(x: -5, y: -12),
+                               control: CGPoint(x: 6, y: -15))
+            blade.closeSubpath()
+            let brightness = 0.23 + 0.77 * (0.5 + 0.5 * sin(progress - Double(i) * tau / 12))
+            layer.fill(blade, with: .linearGradient(
+                Gradient(colors: [tint.opacity(0.08), tint.opacity(brightness)]),
+                startPoint: CGPoint(x: -5, y: -11),
+                endPoint: CGPoint(x: 10, y: -39)
+            ))
+        }
+    }
+
+    private func drawMagneticRing() {
+        arc(radius: 31, width: 12.5, opacity: 0.12)
+        for i in 0..<3 {
+            let start = progress + Double(i) * tau / 3
+            // Strong and soft segments create a brushed-metal sheen.
+            arc(radius: 31, start: start, sweep: 0.56, width: 12.5,
+                opacity: i == 0 ? 0.97 : 0.55 - Double(i) * 0.11, cap: .round)
+        }
+        streak(radius: 31, head: progress, length: 1.07, width: 4,
+               count: 16, minOpacity: 0.02, maxOpacity: 0.83)
     }
 }
