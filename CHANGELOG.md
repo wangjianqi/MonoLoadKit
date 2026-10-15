@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 — Yin–Yang correction and compact capture
+
+- Correct `.liquidYinYang` with tangent circular S geometry, balanced eyes and no offset edge.
+- Preserve all 44 styles and their API/numbering.
+- Add **Minimal grid** and full-screen **Capture GIF** mode to the iOS Demo.
+- Add a native iOS Simulator recording helper (`Scripts/record-demo-gif.sh`).
+- Keep all graphics vectors in the SwiftUI package; no additional runtime dependencies.
+- No GitHub Actions added.
+
+# Changelog
+
 ## 1.1.0 — 2026-10-15
 
 - Added 12 additional native Canvas styles (#33–#44) without changing original cases.

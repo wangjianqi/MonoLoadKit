@@ -226,3 +226,24 @@ The shell script also runs syntax and package checks on Linux but **cannot compi
 ## Contributing and license
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [QA-CHECKLIST.md](QA-CHECKLIST.md). Licensed under [MIT](LICENSE).
+
+## Compact and GIF Capture Modes (Demo)
+
+The example app now provides **three layouts**:
+
+- **Standard**: labeled cards, search, categories, detail previews.
+- **Minimal grid**: dense numbered tiles, density menu, play/pause, color-scheme toggle.
+- **Capture GIF**: 44 styles fitted onto one screen (no scrolling), no status bar or sliders. Double-tap anywhere to exit.
+
+To generate a **real animated GIF from the Simulator** on a Mac, follow [Media/README.md](Media/README.md), or run:
+
+```bash
+brew install ffmpeg
+./Scripts/record-demo-gif.sh
+```
+
+Once captured, add `Media/MonoLoadKit-44-styles.gif` to Git and embed it in the README. The repo does not include a fake or prerendered GIF.
+
+### Style 33: accurate Yin–Yang geometry
+
+`.liquidYinYang` now uses one true outer circle, two equal tangent semicircles for the S divider, equal-sized counter-color eyes, and a transparent even-odd hole for proper tint contrast. The original enum and public API remain unchanged.

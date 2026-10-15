@@ -1,4 +1,5 @@
 import XCTest
+import SwiftUI
 @testable import MonoLoadKit
 
 final class MonoLoadKitTests: XCTestCase {
@@ -16,6 +17,21 @@ final class MonoLoadKitTests: XCTestCase {
             XCTAssertLessThan(style.duration, 10)
             XCTAssertTrue(MonoLoadingCategory.allCases.contains(style.category))
         }
+    }
+
+    func testLiquidYinYangPath() {
+        let shape = MonoLoadingPainter.liquidYinYangShape(radius: 34)
+        // The outer contour must not extend beyond the 68×68 base circle.
+        let bounds = shape.boundingRect
+        XCTAssertEqual(bounds.minX, -34, accuracy: 0.01)
+        XCTAssertEqual(bounds.maxX, 34, accuracy: 0.01)
+        XCTAssertEqual(bounds.minY, -34, accuracy: 0.01)
+        XCTAssertEqual(bounds.maxY, 34, accuracy: 0.01)
+        // The upper eye is an actual even-odd hole, never a gray dot
+        // painted opaquely on top of the bright side.
+        XCTAssertFalse(shape.contains(CGPoint(x: 0, y: -17), eoFill: true))
+        XCTAssertTrue(shape.contains(CGPoint(x: 0, y: -26), eoFill: true))
+        XCTAssertFalse(shape.contains(CGPoint(x: 0, y: 17), eoFill: true))
     }
 
     func testRecommendedStyles() {

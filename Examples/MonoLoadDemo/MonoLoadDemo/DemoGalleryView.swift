@@ -6,6 +6,9 @@ struct DemoGalleryView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var selectedCategory: MonoLoadingCategory?
     @State private var newCollectionOnly = false
+    @State private var isCompact = false
+    @State private var isCaptureMode = false
+    @State private var compactSpacing: CGFloat = 5
     @State private var selectedStyle: MonoLoadingStyle?
     @State private var query = ""
     @State private var isDark = true
@@ -59,28 +62,204 @@ struct DemoGalleryView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                header
-                controls
-                filterBar
-                TimelineView(.animation(minimumInterval: 1.0 / 30.0,
-                                        paused: !isPlaying || reduceMotion)) { frame in
-                    gallery(elapsed: reduceMotion ? 0 : time(at: frame.date))
+        ZStack {
+            canvas.ignoresSafeArea()
+            if isCaptureMode {
+                captureLayout
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: isCompact ? 14 : 24) {
+                        if isCompact {
+                            compactHeader
+                            compactControls
+                        } else {
+                            header
+                            controls
+                            filterBar
+                        }
+                        TimelineView(.animation(minimumInterval: 1.0 / 30.0,
+                                                paused: !isPlaying || reduceMotion)) { frame in
+                            if isCompact {
+                                compactGallery(elapsed: reduceMotion ? 0 : time(at: frame.date))
+                            } else {
+                                gallery(elapsed: reduceMotion ? 0 : time(at: frame.date))
+                            }
+                        }
+                        if !isCompact { footer }
+                    }
+                    .padding(.horizontal, isCompact ? 12 : 20)
+                    .padding(.top, isCompact ? 8 : 22)
+                    .padding(.bottom, isCompact ? 12 : 32)
                 }
-                footer
+                .scrollIndicators(.hidden)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 22)
-            .padding(.bottom, 32)
         }
-        .background(canvas.ignoresSafeArea())
         .preferredColorScheme(isDark ? .dark : .light)
+        .statusBarHidden(isCaptureMode)
         .sheet(item: $selectedStyle) { style in
             DemoStyleDetailView(style: style, isDark: isDark)
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
+    }
+
+    // MARK: - Compact / recording-friendly gallery
+
+    private var compactHeader: some View {
+        HStack(spacing: 10) {
+            Image("BrandMark")
+                .resizable().scaledToFit()
+                .frame(width: 27, height: 27)
+                .accessibilityHidden(true)
+            Text("MonoLoadKit")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(foreground)
+            Text("\(filteredStyles.count) STYLES")
+                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                .foregroundStyle(secondary)
+            Spacer()
+            Button { isCompact = false } label: {
+                Image(systemName: "rectangle.grid.2x2")
+                    .frame(width: 36, height: 36)
+            }
+            .accessibilityLabel("Standard layout")
+            .accessibilityIdentifier("gallery-standard-mode")
+            Button { isDark.toggle() } label: {
+                Image(systemName: isDark ? "sun.max" : "moon")
+                    .frame(width: 36, height: 36)
+            }
+            .accessibilityLabel("Toggle color scheme")
+        }
+        .foregroundStyle(foreground)
+    }
+
+    private var compactControls: some View {
+        HStack(spacing: 10) {
+            Button {
+                newCollectionOnly = false
+                selectedCategory = nil
+                query = ""
+                compactSpacing = 4
+                if !isPlaying { togglePlayback() }
+                isCaptureMode = true
+            } label: {
+                Label("Capture GIF", systemImage: "record.circle")
+                    .font(.system(size: 12, weight: .medium))
+            }
+            .accessibilityIdentifier("gallery-capture-mode")
+            Spacer()
+            Button(action: togglePlayback) {
+                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                    .font(.system(size: 13))
+                    .frame(width: 36, height: 36)
+            }
+            .accessibilityLabel(isPlaying ? "Pause" : "Play")
+            .accessibilityIdentifier("compact-play-pause")
+            Menu {
+                Button("Comfortable") { compactSpacing = 8 }
+                Button("Dense") { compactSpacing = 5 }
+                Button("Maximum") { compactSpacing = 2 }
+            } label: {
+                Image(systemName: "square.grid.3x3")
+                    .font(.system(size: 15))
+                    .frame(width: 36, height: 36)
+            }
+            .accessibilityLabel("Grid density")
+        }
+        .foregroundStyle(foreground)
+        .padding(.horizontal, 8)
+        .frame(height: 38)
+        .background(tile, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func compactGallery(elapsed: TimeInterval) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 45, maximum: 72), spacing: compactSpacing)],
+                  spacing: compactSpacing) {
+            ForEach(filteredStyles) { style in
+                Button { selectedStyle = style } label: {
+                    VStack(spacing: 2) {
+                        MonoLoadingGlyph(style: style, size: 34, color: foreground,
+                                         elapsed: elapsed, reduceMotion: reduceMotion)
+                            .frame(height: 42)
+                        Text(String(format: "%02d", style.number))
+                            .font(.system(size: 9, weight: .medium, design: .monospaced))
+                            .foregroundStyle(secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 64)
+                    .background(tile, in: RoundedRectangle(cornerRadius: 10))
+                    .contentShape(RoundedRectangle(cornerRadius: 10))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Style \(style.number): \(style.label)")
+                .accessibilityIdentifier("compact-style-\(style.number)")
+            }
+        }
+    }
+
+    /// The full-screen capture surface fits all 44 styles without scrolling.
+    /// Double-tap anywhere to return to the compact gallery.
+    private var captureLayout: some View {
+        GeometryReader { geometry in
+            TimelineView(.animation(minimumInterval: 1.0 / 30.0,
+                                    paused: !isPlaying || reduceMotion)) { frame in
+                captureGrid(
+                    elapsed: reduceMotion ? 0 : time(at: frame.date),
+                    available: geometry.size
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
+                .onTapGesture(count: 2) { isCaptureMode = false }
+                .accessibilityAction(named: Text("Exit capture mode")) {
+                    isCaptureMode = false
+                }
+            }
+        }
+        .accessibilityIdentifier("gallery-capture-grid")
+    }
+
+    private func captureGrid(elapsed: TimeInterval, available: CGSize) -> some View {
+        let styles = MonoLoadingStyle.allCases
+        // Adaptive column count: 6–7 on iPhone portrait; more on iPad/landscape.
+        let gap: CGFloat = 4
+        let columns = max(4, min(16, Int((available.width - 16 + gap) / 54)))
+        let rows = Int(ceil(Double(styles.count) / Double(columns)))
+        let tileWidth = (available.width - 16 - CGFloat(columns - 1) * gap) / CGFloat(columns)
+        let tileHeight = min(tileWidth * 1.2,
+                             (available.height - 24 - CGFloat(rows - 1) * gap) / CGFloat(rows))
+        let iconSize = max(16, min(40, tileWidth * 0.68, tileHeight - 15))
+        return VStack(spacing: 10) {
+            HStack(spacing: 8) {
+                Image("BrandMark").resizable().scaledToFit()
+                    .frame(width: 22, height: 22)
+                Text("MonoLoadKit")
+                    .font(.system(size: 14, weight: .semibold))
+                Spacer()
+                Text("44 LOADING ANIMATIONS")
+                    .font(.system(size: 9, weight: .medium, design: .monospaced))
+                    .foregroundStyle(secondary)
+            }
+            .foregroundStyle(foreground)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: gap), count: columns),
+                      spacing: gap) {
+                ForEach(styles) { style in
+                    VStack(spacing: 2) {
+                        MonoLoadingGlyph(style: style, size: iconSize, color: foreground,
+                                         elapsed: elapsed, reduceMotion: reduceMotion)
+                            .frame(height: max(1, tileHeight - 15))
+                        Text(String(format: "%02d", style.number))
+                            .font(.system(size: 8, weight: .medium, design: .monospaced))
+                            .foregroundStyle(secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: max(30, tileHeight))
+                    .background(tile.opacity(0.68), in: RoundedRectangle(cornerRadius: 9))
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 12)
     }
 
     private var header: some View {
@@ -116,6 +295,18 @@ struct DemoGalleryView: View {
                 }
                 .accessibilityLabel("Toggle color scheme")
             }
+            Button {
+                isCompact = true
+            } label: {
+                Label("Minimal grid / GIF capture", systemImage: "square.grid.3x3.fill")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(foreground)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 9)
+                    .background(tile, in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("gallery-compact-mode")
             Text("Original 32 + 12 crafted styles. Pure SwiftUI motion.")
                 .font(.system(size: 13))
                 .foregroundStyle(secondary)

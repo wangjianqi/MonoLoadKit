@@ -471,34 +471,65 @@ internal struct MonoLoadingPainter {
         ))
     }
 
+    /// Precise yin–yang geometry: two equal semicircles create the S divider.
+    /// All curves use the same radius and share tangent points; the eye in the
+    /// light half is an even-odd cutout, so contrast works for any custom tint.
+    internal static func liquidYinYangShape(radius r: CGFloat) -> Path {
+        let half = r / 2
+        let k: CGFloat = 0.5522847498307936 // cubic Bézier quarter-circle constant
+        var path = Path()
+        path.move(to: CGPoint(x: 0, y: -r))
+        // Right-hand outer semicircle: top -> right -> bottom.
+        path.addCurve(to: CGPoint(x: r, y: 0),
+                      control1: CGPoint(x: k * r, y: -r),
+                      control2: CGPoint(x: r, y: -k * r))
+        path.addCurve(to: CGPoint(x: 0, y: r),
+                      control1: CGPoint(x: r, y: k * r),
+                      control2: CGPoint(x: k * r, y: r))
+        // Lower half of S: bottom -> center, bulging right.
+        path.addCurve(to: CGPoint(x: half, y: half),
+                      control1: CGPoint(x: k * half, y: r),
+                      control2: CGPoint(x: half, y: half + k * half))
+        path.addCurve(to: CGPoint(x: 0, y: 0),
+                      control1: CGPoint(x: half, y: half - k * half),
+                      control2: CGPoint(x: k * half, y: 0))
+        // Upper half of S: center -> top, bulging left.
+        path.addCurve(to: CGPoint(x: -half, y: -half),
+                      control1: CGPoint(x: -k * half, y: 0),
+                      control2: CGPoint(x: -half, y: -half + k * half))
+        path.addCurve(to: CGPoint(x: 0, y: -r),
+                      control1: CGPoint(x: -half, y: -half - k * half),
+                      control2: CGPoint(x: -k * half, y: -r))
+        path.closeSubpath()
+        // Circular eye in the light half: punch through to the darker base.
+        let eye = r * 0.137
+        path.addEllipse(in: CGRect(x: -eye, y: -half - eye,
+                                   width: eye * 2, height: eye * 2))
+        return path
+    }
+
     private func drawLiquidYinYang() {
         var layer = graphics
+        // One complete turn per duration; no discontinuity at loop boundaries.
         layer.rotate(by: .radians(progress))
         let r: CGFloat = 34
-        // Outer disc and balanced S-shaped surface, not a pair of plain arcs.
-        layer.fill(Path(ellipseIn: CGRect(x: -r, y: -r, width: 2 * r, height: 2 * r)),
-                   with: .color(tint.opacity(0.17)))
-        var yin = Path()
-        yin.move(to: CGPoint(x: 0, y: -r))
-        yin.addCurve(to: CGPoint(x: 0, y: r),
-                     control1: CGPoint(x: -r * 1.1046, y: -r),
-                     control2: CGPoint(x: -r * 1.1046, y: r))
-        yin.addCurve(to: .zero,
-                     control1: CGPoint(x: r * 0.55, y: r),
-                     control2: CGPoint(x: r * 0.55, y: 0))
-        yin.addCurve(to: CGPoint(x: 0, y: -r),
-                     control1: CGPoint(x: -r * 0.55, y: 0),
-                     control2: CGPoint(x: -r * 0.55, y: -r))
-        yin.closeSubpath()
-        layer.fill(yin, with: .linearGradient(
-            Gradient(colors: [tint.opacity(0.70), tint.opacity(1)]),
-            startPoint: CGPoint(x: -r, y: -r),
-            endPoint: CGPoint(x: r, y: r)
-        ))
-        shadedDisc(in: layer, x: 0, y: -r / 2, radius: 5.2, top: 0.15, bottom: 0.22)
-        shadedDisc(in: layer, x: 0, y: r / 2, radius: 5.2, top: 1, bottom: 0.75)
-        layer.stroke(Path(ellipseIn: CGRect(x: -r, y: -r, width: 2 * r, height: 2 * r)),
-                     with: .color(tint.opacity(0.43)), lineWidth: 1.1)
+        let circle = Path(ellipseIn: CGRect(x: -r, y: -r, width: r * 2, height: r * 2))
+        layer.fill(circle, with: .color(tint.opacity(0.22)))
+
+        layer.fill(Self.liquidYinYangShape(radius: r), with: .linearGradient(
+            Gradient(colors: [tint.opacity(0.99), tint.opacity(0.86)]),
+            startPoint: CGPoint(x: -r / 2, y: -r),
+            endPoint: CGPoint(x: r / 2, y: r)
+        ), style: FillStyle(eoFill: true))
+
+        // The second eye uses exactly the same diameter and opposite tint.
+        // Keeping it opaque preserves legibility at 24–36pt.
+        let eye = r * 0.137
+        layer.fill(Path(ellipseIn: CGRect(x: -eye, y: r / 2 - eye,
+                                          width: eye * 2, height: eye * 2)),
+                   with: .color(tint.opacity(0.98)))
+        // Subtle perimeter, never a second offset ring.
+        layer.stroke(circle, with: .color(tint.opacity(0.16)), lineWidth: 0.7)
     }
 
     private func drawSilkThreeBlade() {

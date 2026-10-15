@@ -28,3 +28,13 @@ xcodebuild -project Examples/MonoLoadDemo/MonoLoadDemo.xcodeproj \
 ```
 
 Only publish a release tag after Xcode tests pass. No GitHub Actions are created by this repository.
+
+## v1.2.0 checks
+
+- [ ] Compare style 33 in light and dark mode at 20, 28, 48, 72 pt; the S seam must be smooth and centered.
+- [ ] Observe continuous 360-degree rotation in style 33; both eyes should be identical size.
+- [ ] Open **Minimal grid**; verify 44 numbered tiles, no long names or clipping.
+- [ ] Enter **Capture GIF**; all 44 tiles must fit without vertical scrolling on iPhone and iPad.
+- [ ] Double-tap the capture grid to return; screen status bar should reappear.
+- [ ] Run `./Scripts/record-demo-gif.sh` on a booted Simulator and inspect the actual GIF.
+- [ ] Test with Reduce Motion enabled (animations become static).

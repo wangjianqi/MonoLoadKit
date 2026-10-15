@@ -133,3 +133,22 @@ xcodebuild -project Examples/MonoLoadDemo/MonoLoadDemo.xcodeproj \
 ## 开源
 
 [MIT 许可证](LICENSE)。欢迎通过 Issue / PR 提出新的矢量动画和性能改进。参见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 极简模式与 GitHub GIF 录制
+
+Demo 现在包含三种展示模式：
+
+- **Standard（标准）**：原有的完整卡片、分类筛选与单项预览。
+- **Minimal grid（极简）**：仅显示编号和动画，使用高密度网格，并保留播放/暂停与深浅色切换。
+- **Capture GIF（录制）**：自动将全部 44 款排在一屏，隐藏状态栏和多余控件，适合录制 GitHub README 动图。**双击屏幕退出录制模式**。
+
+在 Mac 上运行 Demo，进入极简模式，点击 **Capture GIF**。安装 `ffmpeg` 后执行：
+
+```bash
+brew install ffmpeg
+./Scripts/record-demo-gif.sh
+```
+
+脚本通过 iOS Simulator 录屏生成 `Media/MonoLoadKit-44-styles.gif`。录制步骤见 [Media/README.md](Media/README.md)。
+
+**33 号太极修复：** 使用同心的完整外圆、两段严格对称的半圆构成 S 形，阴阳点等大，亮面小圆点使用偶奇填充镂空以自适应配色。公开 API 不变。当前工程未包含在 Linux 上伪造的 Demo GIF，请在 macOS/iOS 模拟器中录制真实运行画面。
