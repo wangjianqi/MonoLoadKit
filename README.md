@@ -4,11 +4,18 @@
 
 **44 minimal, animated SwiftUI loading indicators. One zero-dependency Swift Package.**
 
+![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white) ![iOS](https://img.shields.io/badge/iOS-16%2B-000000?logo=apple) ![macOS](https://img.shields.io/badge/macOS-13%2B-000000?logo=apple) ![tvOS](https://img.shields.io/badge/tvOS-16%2B-000000?logo=apple) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-F05138?logo=swift&logoColor=white)
+
 [简体中文](README.zh-CN.md) · [License](LICENSE) · [Demo](Examples/MonoLoadDemo)
 
 MonoLoadKit is a lightweight open-source library for iOS, macOS, and tvOS. Every animation is drawn at runtime using SwiftUI `Canvas`, so there are **no GIFs, Lottie assets, embedded fonts, networking requests, or third-party dependencies**.
 
 Designed for monochrome interfaces, camera apps, productivity tools, and any app that needs subtle, consistent progress feedback. It is an animation component, **not** a blocking HUD.
+
+<p align="center">
+  <img src="Media/MonoLoadKit-demo.gif" width="320" alt="MonoLoadKit demo recording: 44 loading styles on one screen">
+</p>
+*Real recording of the Demo gallery — all 44 styles on one screen (dark theme).*
 
 ## Features
 
@@ -40,8 +47,7 @@ In Xcode: **File → Add Package Dependencies… → Add Local…** for a cloned
 Swift package manifest:
 
 ```swift
-// After publishing the repository, replace the URL with your actual GitHub URL.
-.package(url: "https://github.com/<OWNER>/MonoLoadKit.git", from: "1.1.0")
+.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.1.0")
 ```
 
 Then add the `MonoLoadKit` product to your app target.
@@ -242,7 +248,7 @@ brew install ffmpeg
 ./Scripts/record-demo-gif.sh
 ```
 
-Once captured, add `Media/MonoLoadKit-44-styles.gif` to Git and embed it in the README. The repo does not include a fake or prerendered GIF.
+A real capture is already committed at [`Media/MonoLoadKit-demo.gif`](Media/MonoLoadKit-demo.gif) and embedded at the top of this README. Re-capture any time with the script above; the repo does not include any fake or prerendered GIF.
 
 ### Style 33: accurate Yin–Yang geometry
 

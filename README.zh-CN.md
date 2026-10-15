@@ -4,7 +4,14 @@
 
 **44 款（原有 32 款 + 新增 12 款）极简 SwiftUI Loading 动画，可通过 Swift Package Manager 直接引入。**
 
+![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white) ![iOS](https://img.shields.io/badge/iOS-16%2B-000000?logo=apple) ![macOS](https://img.shields.io/badge/macOS-13%2B-000000?logo=apple) ![tvOS](https://img.shields.io/badge/tvOS-16%2B-000000?logo=apple) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-F05138?logo=swift&logoColor=white)
+
 [English](README.md) · [许可证](LICENSE) · [Demo](Examples/MonoLoadDemo)
+
+<p align="center">
+  <img src="Media/MonoLoadKit-demo.gif" width="320" alt="MonoLoadKit Demo 录屏：44 款动画同屏展示">
+</p>
+*Demo 画廊实机录制 —— 44 款动画同屏（深色主题）。*
 
 ## 核心特点
 
@@ -25,7 +32,11 @@ Swift 5.9+、iOS 16+、macOS 13+、tvOS 16+，推荐使用最新版 Xcode 编译
 
 将仓库放到本地，在 Xcode 中选择 **File → Add Package Dependencies → Add Local…**，选中仓库根目录，添加 `MonoLoadKit` 产品到应用 Target。
 
-发布到 GitHub 后，也可以使用仓库真实 URL 按照 Swift Package Manager 方式添加，具体 URL 在创建仓库后确定。
+发布到 GitHub 后，也可以使用仓库 URL 按照 Swift Package Manager 方式添加：
+
+```swift
+.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.1.0")
+```
 
 ```swift
 import SwiftUI
@@ -151,4 +162,6 @@ brew install ffmpeg
 
 脚本通过 iOS Simulator 录屏生成 `Media/MonoLoadKit-44-styles.gif`。录制步骤见 [Media/README.md](Media/README.md)。
 
-**33 号太极修复：** 使用同心的完整外圆、两段严格对称的半圆构成 S 形，阴阳点等大，亮面小圆点使用偶奇填充镂空以自适应配色。公开 API 不变。当前工程未包含在 Linux 上伪造的 Demo GIF，请在 macOS/iOS 模拟器中录制真实运行画面。
+当前仓库已包含一段真实录屏 [Media/MonoLoadKit-demo.gif](Media/MonoLoadKit-demo.gif)（即本 README 顶部的动图），可随时用上面的脚本重新录制；仓库不包含任何伪造或预渲染的 GIF。
+
+**33 号太极修复：** 使用同心的完整外圆、两段严格对称的半圆构成 S 形，阴阳点等大，亮面小圆点使用偶奇填充镂空以自适应配色。公开 API 不变。

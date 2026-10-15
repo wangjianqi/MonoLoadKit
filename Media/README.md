@@ -18,3 +18,5 @@ The GIF is a **real recording of the SwiftUI Demo**, not a prerendered animation
 Performance note: 44 simultaneous `Canvas` renders on older devices can be demanding. Test in a release build if capture frame rate matters. At different cycle durations, a short GIF can have a small jump at the loop seam.
 
 `YinYang-Geometry-Preview.png` is a static **geometry reference**, not a screenshot of the SwiftUI Demo. Its S-shaped contour follows the same cubic circle construction used by `MonoLoadingPainter`.
+
+`MonoLoadKit-demo.gif` is a committed **real screen recording** of the Demo gallery (44 styles on one screen, dark theme), embedded at the top of both READMEs. Re-capture it with the steps above if the style set changes.

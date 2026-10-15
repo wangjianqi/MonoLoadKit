@@ -19,6 +19,7 @@ All exported marks share one 512×512 coordinate system. Center=(256,256), radiu
 - `MonoLoadMark-Light.svg/png` — dark mark on transparent background for light UI.
 - `MonoLoadLockup.svg/png` — lockup with dark-background field.
 - `MonoLoadLockup-Light.svg/png` — lockup with light-background field.
+- `social-preview.png` — 1280×640 GitHub Social preview (upload in repo Settings → Social preview).
 
 ## Recommended usage
 
