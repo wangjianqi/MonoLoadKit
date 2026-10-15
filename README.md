@@ -47,7 +47,7 @@ In Xcode: **File → Add Package Dependencies… → Add Local…** for a cloned
 Swift package manifest:
 
 ```swift
-.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.1.0")
+.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.0.0")
 ```
 
 Then add the `MonoLoadKit` product to your app target.

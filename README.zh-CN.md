@@ -35,7 +35,7 @@ Swift 5.9+、iOS 16+、macOS 13+、tvOS 16+，推荐使用最新版 Xcode 编译
 发布到 GitHub 后，也可以使用仓库 URL 按照 Swift Package Manager 方式添加：
 
 ```swift
-.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.1.0")
+.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.0.0")
 ```
 
 ```swift

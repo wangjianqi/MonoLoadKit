@@ -1,30 +1,22 @@
 # Changelog
 
-## 1.2.0 — Yin–Yang correction and compact capture
+## 1.0.0 — 2026-10-15
 
-- Correct `.liquidYinYang` with tangent circular S geometry, balanced eyes and no offset edge.
-- Preserve all 44 styles and their API/numbering.
-- Add **Minimal grid** and full-screen **Capture GIF** mode to the iOS Demo.
-- Add a native iOS Simulator recording helper (`Scripts/record-demo-gif.sh`).
-- Keep all graphics vectors in the SwiftUI package; no additional runtime dependencies.
-- No GitHub Actions added.
+First public release of MonoLoadKit.
 
-# Changelog
+- 44 minimal, animated SwiftUI loading indicators (32 original + 12 crafted additions, #33–#44).
+- Pure SwiftUI `Canvas` vector drawing — no GIFs, Lottie assets, embedded fonts, networking, or third-party dependencies.
+- Public `MonoLoadingView` and stateless `MonoLoadingGlyph` (shared-timeline batch API).
+- Pause/resume preserving progress phase; Reduce Motion static fallback.
+- Standalone iOS Demo app: standard gallery, minimal grid, full-screen Capture GIF mode, search, categories, light/dark themes, size/speed controls.
+- `.liquidYinYang` (#33) uses true tangent circular S geometry with balanced eyes and an even-odd tint hole.
+- Brand identity (SVG mark, horizontal lockup, 1024px App Icon, GitHub Social preview) and bilingual documentation (English / Simplified Chinese).
+- Style-registry XCTest checks across all 44 styles; MIT license; no GitHub Actions.
 
-## 1.1.0 — 2026-10-15
+### Installation
 
-- Added 12 additional native Canvas styles (#33–#44) without changing original cases.
-- Reworked Yin Yang and three-blade concepts as new enhanced styles (`liquidYinYang`, `silkThreeBlade`).
-- Added original SVG brand identity, transparent mark, 1024px App Icon, and Demo asset catalog wiring.
-- Demo now features the new brand in its header and a New 12 collection filter.
-- Extended style registry and XCTest checks to all 44 styles.
-- Added English and Simplified Chinese documentation of new styles and brand assets.
+```swift
+.package(url: "https://github.com/wangjianqi/MonoLoadKit.git", from: "1.0.0")
+```
 
-## Previously unreleased (initial implementation)
-
-- Initial Swift Package source with 32 Canvas-based vector loading indicators.
-- Public SwiftUI `MonoLoadingView` and `MonoLoadingGlyph` APIs.
-- Standalone iOS gallery demo project (SPM local package reference).
-- English and Simplified Chinese documentation, style registry tests, MIT license.
-
-Tagging a release should be done only after the package and Demo have been built and tested on Apple SDKs.
+Build and runtime verified with Xcode on Apple platforms. Source syntax and the SPM manifest can also be validated on Linux, but SwiftUI cannot be compiled there.
